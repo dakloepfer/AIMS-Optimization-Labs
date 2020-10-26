@@ -20,18 +20,27 @@ class Ridge(Objective):
 class Ridge_ClosedForm(Ridge):
     def task_error(self, w, x, y):
         self._validate_inputs(w, x, y)
-        # TODO: Compute mean squared error
-        error = None
+        # Compute mean squared error
+        preds = torch.mm(x, w).squeeze()
+        error = torch.mean(torch.square(preds - y))
         return error
 
     def oracle(self, w, x, y):
         self._validate_inputs(w, x, y)
         # regularization hyper-parameter
         mu = self.hparams.mu
-        # TODO: Compute objective value
-        obj = None
-        # TODO: compute close form solution
-        sol = None
+
+        # Compute objective value
+        obj = self.task_error(w, x, y) + 0.5 * mu * torch.square(torch.norm(w))
+
+        # compute close form solution
+        n = x.size(0)
+        n_features = x.size(1)
+        
+        intermediary = torch.inverse(torch.mm(x.transpose(0, 1), x) + 0.5 * n * mu * torch.eye(n_features))
+        sol = torch.mv(torch.mm(intermediary, x.transpose(0, 1)), y)
+        sol = sol.view(n_features, 1)
+
         return {'obj': obj, 'sol': sol}
 
 
