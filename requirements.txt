@@ -1,0 +1,10 @@
+torch
+tornado==4.5.3; python_version < '3.0'
+visdom==0.1.7; python_version < '3.0'
+visdom==0.1.8.4; python_version >= '3.0'
+git+git://github.com/oval-group/mlogger
+torchvision
+tqdm
+sklearn
+matplotlib
+ninja
