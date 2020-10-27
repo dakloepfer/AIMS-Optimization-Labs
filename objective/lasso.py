@@ -20,18 +20,20 @@ class Lasso(Objective):
 class Lasso_subGradient(Lasso):
     def task_error(self, w, x, y):
         self._validate_inputs(w, x, y)
-        # TODO: Compute mean squared error
-        error = None
+        preds = torch.mm(x, w).squeeze()
+        error = torch.mean(torch.square(preds - y))
         return error
 
     def oracle(self, w, x, y):
         self._validate_inputs(w, x, y)
         # regularization hyper-parameter
         mu = self.hparams.mu
-        # TODO: Compute objective value
-        obj = None
-        # TODO: compute subgradient
-        dw = None
+        # Compute objective value
+        obj = self.task_error(w, x, y) + 0.5 * mu * torch.norm(w, p=1)
+        # compute subgradient
+        n = x.size(0)
+        error = torch.mm(x, w).squeeze() - y
+        dw = 2 * torch.mean(x.transpose(0, 1) * error, dim=1, keepdim=True) + 0.5 * mu * torch.sign(w)
         return {'obj': obj, 'dw': dw}
 
 
