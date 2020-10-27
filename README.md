@@ -147,3 +147,38 @@ Warning: The plots will disappear when you close the server. If you want to save
 We provide tests for all the elements you will need to implement to make sure that each component works as expected before running the full optimization. You can either run all the tests by running `python run_test.py` or a specific set of tests by calling for example `python run_test.py TestObj_Ridge_ClosedForm`. For each task requiring new code to be implemented, the corresponding test will be given.
 
 If a test fails, that means that your class did not returned the expected value. You should first make sure your maths are correct, that their implementation is correct and potentially print intermediary results to make sure they are what you expect.
+
+## Answers to Questions of Sheet 1
+
+### Question 1
+
+The Ridge Regression function is strongly convex because it is a quadratic function.
+
+### Question 2
+
+The objective function is smooth, so we can use Gradient Descent to solve it. Since it is a quadratic function, we can also find a closed-form solution to the optimisation problem.
+The Hessian of a convex function is positive semi-definite.
+
+### Question 3
+
+The gradient is equal to 0 at w_star. See code in ridge.py for solution to this equation.
+
+### Question 4
+
+Inverting a matrix is computationally expensive and requires relatively high memory; when these things are a bottleneck and not achieving the best objective function value is tolerable, using a few steps of gradient descent may be preferable.
+
+### Question 5
+
+The LASSO regression function is convex but not smooth due to the absolute value in the regularisation term. One can use subgradient descent to optimise it.
+
+### Question 6
+
+It takes around 50 epochs.
+
+### Question 7
+
+Use log(2*cosh(w/t)) for example, or other functions that one can google.
+
+### Question 8
+
+A higher temperature makes the regularisation term more resemble the L2 regularisation (ridge regression) than the L1 regularisation (LASSO). A lower temperature favours sparse weights relatively more.
