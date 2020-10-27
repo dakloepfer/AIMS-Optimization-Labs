@@ -182,3 +182,27 @@ Use log(2*cosh(w/t)) for example, or other functions that one can google.
 ### Question 8
 
 A higher temperature makes the regularisation term more resemble the L2 regularisation (ridge regression) than the L1 regularisation (LASSO). A lower temperature favours sparse weights relatively more.
+
+## Answers to Question Sheet 2
+
+### Question 2
+
+### Question 3
+
+### Question 4
+
+### Question 6
+
+### Question 7
+
+### Question 8
+
+### Question 9
+
+### Question 10
+
+### Question 11
+
+### Question 12
+
+### Question 13
