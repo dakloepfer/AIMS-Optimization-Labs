@@ -54,7 +54,7 @@ class SmoothedLasso_Gradient(Lasso):
         # temperature parameter
         temp = self.hparams.temp
         # Compute objective value
-        obj = self.task_error(w, x, y) + 0.5 * mu * temp * torch.sum(torch.log(2 * torch.cosh(w / temp)))
+        obj = self.task_error(w, x, y) + 0.5 * mu * temp * torch.sum(torch.abs(w/temp) + torch.log(1 + torch.exp(-2*torch.abs(w/temp))))
         # compute gradient
         error = torch.mm(x, w).squeeze() - y
         dw = 2 * torch.mean(x.transpose(0, 1) * error, dim=1, keepdim=True) + 0.5 * mu * torch.tanh(w / temp)
