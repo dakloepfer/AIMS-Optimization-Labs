@@ -107,6 +107,15 @@ class SGD(GD):
         
         # initial learning rate
         init_lr = self.hparams.init_lr
+        # boolean whether learning rate is constant
+        fix_lr = self.hparams.fix_lr
         # (stochastic) gradient given by oracle
         dw = oracle_info['dw']
-        # TODO: Update self.variables.w, self.variables.lr and self.variables.it
+        # Update self.variables.w, self.variables.lr and self.variables.it
+        if fix_lr:
+            self.variables.lr = init_lr
+        else:
+            self.variables.lr = init_lr / torch.sqrt(self.variables.it)
+
+        self.variables.w -= self.variables.lr * dw
+        self.variables.it += 1
