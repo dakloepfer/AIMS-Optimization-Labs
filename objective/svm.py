@@ -10,8 +10,12 @@ class SVM(Objective):
 
     def task_error(self, w, x, y):
         self._validate_inputs(w, x, y)
-        # TODO: Compute mean misclassification
-        error = None
+        # Compute mean misclassification
+        scores = torch.mm(x, w)
+        _, preds = scores.max(dim=1)
+        mistakes = (preds != y).float()
+        error = mistakes.mean()        
+        
         return error
 
     def _validate_inputs(self, w, x, y):
@@ -29,10 +33,30 @@ class SVM_SubGradient(SVM):
         self._validate_inputs(w, x, y)
         # regularization hyper-parameter
         mu = self.hparams.mu
-        # TODO: Compute objective value
-        obj = None
-        # TODO: compute subgradient
-        dw = None
+        # Compute objective value
+        scores = torch.mm(x, w)
+
+        wyx = scores[torch.arange(x.shape[0]), y]
+        delta_ky = torch.ones_like(scores)
+        delta_ky[torch.arange(x.shape[0]), y] = 0
+
+        max_arguments = scores + delta_ky - wyx[:, None]
+
+        hinge_loss = torch.mean(torch.max(max_arguments, dim=1)[0])
+        obj = hinge_loss + 0.5 * mu * torch.square(torch.norm(w))
+
+        # compute subgradient
+        dw = torch.zeros_like(w)
+
+        max_values, max_indices = torch.max(max_arguments, dim=1)
+
+        for sample in range(0, x.shape[0]):
+            if max_values[sample] > 0:
+                dw[:, max_indices[sample]] += x[sample, :]
+                dw[:, y[sample]] -= x[sample, :]
+
+        dw = dw / x.shape[0]
+        dw += mu * w
 
         return {'obj': obj, 'dw': dw}
 
