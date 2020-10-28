@@ -95,6 +95,6 @@ class SVM_ConditionalGradient(SVM):
         w_s = -1/(mu * n_samples) * dw
 
         # Compute l_s
-        l_s = torch.sum(torch.eq(max_indices, y).float()) / n_samples
+        l_s = torch.sum(1 - torch.eq(max_indices, y).float()) / n_samples
  
         return {'obj': primal, 'w_s': w_s, 'l_s': l_s}
