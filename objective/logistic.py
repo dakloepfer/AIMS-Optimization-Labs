@@ -29,13 +29,17 @@ class Logistic_Gradient(Objective):
         # regularization hyper-parameter
         mu = self.hparams.mu
         # Compute objective value
+        x = x.double()
+        w = w.double()
         obj = torch.mean(torch.log(torch.sum(torch.exp(torch.mm(x, w)), dim=1)) - torch.diag(torch.mm(x, w[:, y])))
+
         obj += 0.5 * mu * torch.square(torch.norm(w))
-        
+
         # compute gradient
         dw = torch.zeros_like(w)
         for i in range(0, w.shape[1]):
-            dwi = torch.mean(x * (torch.exp(torch.mv(x, w[:, i])) / torch.sum(torch.exp(torch.mm(x, w)), dim=1))[:, None] - torch.tensor(i == y).float()[:, None] * x, dim=0)
+
+            dwi = torch.mean(x * (torch.exp(torch.mv(x, w[:, i])) / torch.sum(torch.exp(torch.mm(x, w)), dim=1))[:, None] - (i == y).float()[:, None] * x, dim=0)
             dw[:, i] = dwi
 
         dw += mu * w
