@@ -70,11 +70,31 @@ class SVM_ConditionalGradient(SVM):
         n_samples = self.hparams.n_samples
         # size of current mini-batch
         batch_size = x.size(0)
-        # TODO: Compute primal objective value
-        primal = None
-        # TODO: Compute w_s
-        w_s = None
-        # TODO: Compute l_s
-        l_s = None
 
+        # Compute primal objective value
+        scores = torch.mm(x, w)
+
+        wyx = scores[torch.arange(x.shape[0]), y]
+        delta_ky = torch.ones_like(scores)
+        delta_ky[torch.arange(x.shape[0]), y] = 0
+        max_arguments = scores + delta_ky - wyx[:, None]
+
+        hinge_loss = torch.mean(torch.max(max_arguments, dim=1)[0])
+        primal = hinge_loss + 0.5 * mu * torch.square(torch.norm(w))
+
+        # Compute w_s
+        dw = torch.zeros_like(w)
+
+        max_values, max_indices = torch.max(max_arguments, dim=1)
+
+        for sample in range(0, x.shape[0]):
+            if max_values[sample] > 0:
+                dw[:, max_indices[sample]] += x[sample, :]
+                dw[:, y[sample]] -= x[sample, :]
+
+        w_s = -1/(mu * n_samples) * dw
+
+        # Compute l_s
+        l_s = torch.sum(torch.eq(max_indices, y).float()) / n_samples
+ 
         return {'obj': primal, 'w_s': w_s, 'l_s': l_s}
