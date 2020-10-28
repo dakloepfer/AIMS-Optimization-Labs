@@ -24,7 +24,7 @@ class Subset(data.Dataset):
     def __getitem__(self, idx):
         if torch.is_tensor(idx) and idx.dim():
             res = [self[iidx] for iidx in idx]
-            return torch.stack([x[0] for x in res]), torch.stack([x[1] for x in res])
+            return torch.stack([x[0] for x in res]), torch.tensor([x[1] for x in res]).long()
         if self.indices is None:
             return self.dataset[idx]
         else:
