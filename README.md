@@ -150,59 +150,82 @@ If a test fails, that means that your class did not returned the expected value.
 
 ## Answers to Questions of Sheet 1
 
-### Question 1
+### Question 1.1
 
 The Ridge Regression function is strongly convex because it is a quadratic function.
 
-### Question 2
+### Question 1.2
 
 The objective function is smooth, so we can use Gradient Descent to solve it. Since it is a quadratic function, we can also find a closed-form solution to the optimisation problem.
 The Hessian of a convex function is positive semi-definite.
 
-### Question 3
+### Question 1.3
 
 The gradient is equal to 0 at w_star. See code in ridge.py for solution to this equation.
 
-### Question 4
+### Question 1.4
 
 Inverting a matrix is computationally expensive and requires relatively high memory; when these things are a bottleneck and not achieving the best objective function value is tolerable, using a few steps of gradient descent may be preferable.
 
-### Question 5
+### Question 1.5
 
 The LASSO regression function is convex but not smooth due to the absolute value in the regularisation term. One can use subgradient descent to optimise it.
 
-### Question 6
+### Question 1.6
 
 It takes around 50 epochs.
 
-### Question 7
+### Question 1.7
 
 Use log(2*cosh(w/t)) for example, or other functions that one can google.
 
-### Question 8
+### Question 1.8
 
 A higher temperature makes the regularisation term more resemble the L2 regularisation (ridge regression) than the L1 regularisation (LASSO). A lower temperature favours sparse weights relatively more.
 
 ## Answers to Question Sheet 2
 
-### Question 2
+### Question 2.1
 
-### Question 3
+We know that log-sum-exp is convex, and composition with an affine map preserves convexity.
 
-### Question 4
+### Question 2.2
 
-### Question 6
+The gradient w.r.t. w_i is x^T exp(w_i^T x) / sum_k(exp(w_k^T x)) - delta(i, y) x^T.
 
-### Question 7
+### Question 2.3
 
-### Question 8
+The time complexity of one iteration of gradient descent grows linearly with the number of samples, because the gradients need to be evaluated for every sample in the same way and then combined also in linear time.
 
-### Question 9
+### Question 2.4
 
-### Question 10
+Taking the maximum of several functions is not in general smooth; in this case there is at least one 'kink', at the point where the hinge loss becomes zero.
+A valid sub-gradient of the loss with respect to w_i is s = 0 if L_hinge = 0. If L_hinge > 0, s = -x if i==y, s = +x if i == argmax{w_i x + delta(i, y) - w_y x}, and 0 otherwise.
 
-### Question 11
+### Question 2.6 and 2.7
 
-### Question 12
+Deriving f(alpha^(t+1)) = f((1-gamma)*alpha^t + gamma s^t) w.r.t. gamma and setting this equal to zero, we find that to minimise f(alpha^(t+1)) we need gamma^star A^T A (s(t) - alpha(t))= b / mu - alpha(t), i.e. we can find gamma^star as the ratio of two vectors. (I am just going to trust that the two vectors are actually parallel). If we find a gamma < 0 or gamma > 1, we need to project to gamma = 0 or 1 respectively, since f(gamma) is convex.
 
-### Question 13
+### Question 2.8
+
+Yes, the time complexities make sense.
+
+### Question 2.9
+
+see Algorithm 3 in notes
+
+### Question 2.10
+
+see Algorithm 3 in notes
+
+### Question 2.11
+
+see Algorithm 4 in notes
+
+### Question 2.12
+
+The most expensive operations involve scalar products and other operations on vectors of length Cd, so the time complexity is O(Cd) (for one step). We need to store O(N) copies of such vectors, so the space complexity is O(NCd).
+
+### Question 2.13
+
+The time complexity per step is now O(bCd), because the vectors are longer by a factor b, though for the algorithm to converge we have the same time complexity as in Algorithm 4 because correspondingly fewer steps are needed. The space complexity remains at O(NCd), because while each vector is longer by a factor b, we need to store a factor b fewer vectors.
