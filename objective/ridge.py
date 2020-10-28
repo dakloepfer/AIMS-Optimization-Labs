@@ -47,16 +47,19 @@ class Ridge_ClosedForm(Ridge):
 class Ridge_Gradient(Ridge):
     def task_error(self, w, x, y):
         self._validate_inputs(w, x, y)
-        # TODO: Compute mean squared error
-        error = None
+        # Compute mean squared error
+        preds = torch.mm(x, w).squeeze()
+        error = torch.mean(torch.square(preds - y))
         return error
 
     def oracle(self, w, x, y):
         self._validate_inputs(w, x, y)
         # regularization hyper-parameter
         mu = self.hparams.mu
-        # TODO: Compute objective value
-        obj = None
-        # TODO: compute gradient
-        dw = None
+        # Compute objective value
+        obj = self.task_error(w, x, y) + 0.5 * mu * torch.square(torch.norm(w))
+        # compute gradient
+        preds = torch.mm(x, w).squeeze()
+        dw = 2 * torch.mv(x.transpose(0, 1), (preds - y)) / x.shape[0] + mu * w.squeeze()
+        dw = dw.view(x.size(1), 1)
         return {'obj': obj, 'dw': dw}
