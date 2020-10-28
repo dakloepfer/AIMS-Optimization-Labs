@@ -12,10 +12,7 @@ class SVM(Objective):
         self._validate_inputs(w, x, y)
         # Compute mean misclassification
         scores = torch.mm(x, w)
-        _, preds = scores.max(dim=1)
-        mistakes = (preds != y).float()
-        error = mistakes.mean()        
-        
+        error = 1 - accuracy(scores, y)
         return error
 
     def _validate_inputs(self, w, x, y):

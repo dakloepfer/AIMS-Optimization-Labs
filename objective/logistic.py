@@ -1,7 +1,7 @@
 import torch
 
 from objective.base import Objective
-
+from utils import accuracy
 
 class Logistic_Gradient(Objective):
     def _validate_inputs(self, w, x, y):
@@ -18,9 +18,7 @@ class Logistic_Gradient(Objective):
         self._validate_inputs(w, x, y)
         # Compute prediction error (fraction of misclassified samples) 
         scores = torch.mm(x, w)
-        _, preds = scores.max(dim=1)
-        mistakes = (preds != y).float()
-        error = mistakes.mean()
+        error = 1 - accuracy(scores, y)
 
         return error
 
