@@ -27,7 +27,7 @@ class VariablesGD(Variable):
 
     def init(self):
         # Compute size
-        size = (self.hparams.n_features, 1)
+        size = (self.hparams.n_features, self.hparams.n_classes)
         assert isinstance(size, tuple)
         # Will contain the weights
         self.w = torch.rand(size, requires_grad=True)
