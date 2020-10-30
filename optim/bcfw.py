@@ -22,8 +22,7 @@ class VariablesBCFW(Variable):
         super(VariablesBCFW, self).__init__(hparams)
 
     def init(self):
-        self.w = torch.zeros((self.hparams.n_features, self.hparams.n_classes),
-                             requires_grad=True)
+        self.w = torch.zeros((self.hparams.n_features, self.hparams.n_classes), requires_grad=True)
         self.w_i = torch.zeros((self.hparams.n_blocks, self.hparams.n_features,
                                 self.hparams.n_classes))
         self.ll = torch.tensor(0.)
@@ -46,17 +45,30 @@ class BCFW(Optimizer):
         w_s = oracle_info['w_s']
         l_s = oracle_info['l_s']
 
-        # TODO: compute optimal step size
-        gamma = self._step_size(my_args=None)
+        # compute optimal step
+        gamma = self._step_size(w_s, l_s, i)
 
-        # TODO: perform update
+        # perform update
+        new_w_i = (1 - gamma) * self.variables.w_i[i] + gamma * w_s
+        new_l_i = (1 - gamma) * self.variables.l_i[i] + gamma * l_s
+        
+        self.variables.w += new_w_i - self.variables.w_i[i]
+        self.variables.ll += new_l_i - self.variables.l_i[i]
+        self.variables.w_i[i] = new_w_i
+        self.variables.l_i[i] = new_l_i
 
-    def _step_size(self, my_args):
+    def _step_size(self, w_s, l_s, i):
         # regularization parameter
         mu = self.hparams.mu
-        # TODO: compute optimal step size
-        gamma = None
-        return gamma
+
+        # compute optimal step size
+        if torch.allclose(w_s, self.variables.w_i[i]) and torch.allclose(l_s, self.variables.l_i[i]):
+            # return gamma=0 if we would get NaN due to calculating gamma = 0 / 0
+            return torch.tensor(0.)
+
+        gamma = - mu * torch.sum(torch.mul(w_s - self.variables.w_i[i], self.variables.w)) + l_s - self.variables.l_i[i]
+        gamma = gamma / (mu * torch.square(torch.norm(w_s - self.variables.w_i[i])))
+        return gamma.clamp(0., 1.)
 
     def get_sampler(self, dataset):
         # this sampler shuffles the order of the mini-batches but not
