@@ -228,4 +228,4 @@ The most expensive operations involve scalar products and other operations on ve
 
 ### Question 2.13
 
-The time complexity per step is now O(bCd), because the vectors are longer by a factor b, though for the algorithm to converge we have the same time complexity as in Algorithm 4 because correspondingly fewer steps are needed. The space complexity remains at O(NCd), because while each vector is longer by a factor b, we need to store a factor b fewer vectors.
+The time complexity per step is now O(bCd), because the vectors are longer by a factor b, though for the algorithm to converge we have the same time complexity as in Algorithm 4 because correspondingly fewer steps are needed. The space complexity remains at O(MCd), because we need to store a factor b fewer vectors.
